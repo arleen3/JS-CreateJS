@@ -7,15 +7,18 @@ const check_expr = (obj, object_name, property_name, operator, right_value) => {
   );
 }
 
+
 describe('Module 01 - Game Loop', () => {
 
-  it('Reference an external script @external-script', () => {
-    const srcs = $('script').map(function(i, el) { return this.attribs.src }).get();
-    assert(srcs.includes('https://code.createjs.com/1.0.0/createjs.min.js'), 'Did you add a `script` tag for the Createjs library?');
-    assert(srcs.includes('https://code.createjs.com/1.0.0/createjs.min.js'), 'Did you add a `script` tag for the app.js file?');
-  });
 
-  it('Listen for DOMContentLoaded @listen-domcontentloaded', () => {
+   describe('This unit test adds a script tag that references the CreateJS on the CreateJS CDN and it also adds a script tag for the app.js file',() => {    
+    it('Reference an external script @external-script', () => {
+      const srcs = $('script').map(function(i, el) { return this.attribs.src }).get();
+      assert(srcs.includes('https://code.createjs.com/1.0.0/createjs.min.js'), 'Did you add a `script` tag for the Createjs library?');
+      assert(srcs.includes('https://code.createjs.com/1.0.0/createjs.min.js'), 'Did you add a `script` tag for the app.js file?');
+    });
+  describe('This unit test opens app.js and adds an event listener to the document',() => {
+    it('Listen for DOMContentLoaded @listen-domcontentloaded', () => {
     assert(astq.query(ast,`
       // CallExpression [
         /:callee MemberExpression [
@@ -24,9 +27,11 @@ describe('Module 01 - Game Loop', () => {
         ] &&
         /:arguments Literal [ @value == 'DOMContentLoaded' ]
       ]`).length >= 1, 'Do you have an event listener that is listening for the `DOMContentLoaded` event?');
-  });
-  it('Key code constants @keycode-constants', () => {
-    assert(astq.query(ast,`
+    });
+  })  
+  describe('This test unit adds four keycode constants at the top of the event handler anonymous function',() =>{
+     it('Key code constants @keycode-constants', () => {
+     assert(astq.query(ast,`
       // BlockStatement
         / VariableDeclaration [ @kind == 'const' ]
           / VariableDeclarator [ 
@@ -58,8 +63,10 @@ describe('Module 01 - Game Loop', () => {
             /:init Literal [ @value == 40 ]
           ]
     `).length >= 1, 'Do you have a constant called `KEYCODE_DOWN` set equal to `40`?');
-  });
-  it('Create a stage @create-stage', () => {
+    });
+  })  
+  describe('This test unit assigns a contant called stage a new createjs Stage below the key code and makes sure they have the proper ID', () => { 
+     it('Create a stage @create-stage', () => {
     const stage = astq.query(ast, `
       // BlockStatement
         / VariableDeclaration [ @kind == 'const' ]
@@ -72,6 +79,7 @@ describe('Module 01 - Game Loop', () => {
     assert(stage[0].init.callee.object.name === 'createjs' && stage[0].init.callee.property.name == 'Stage', 'Are you using the `createjs.Stage` class?');
     assert(stage[0].init.arguments[0].value === 'canvas', 'Are you providing the id of `canvas` to the Stage constructor?');
   });
+ })   
   it('Create a shape @ship-shape', () => {
     const ship = astq.query(ast, `
       // BlockStatement
